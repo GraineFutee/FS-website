@@ -20,16 +20,25 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
+  console.log(req.body);
+  console.log(req.body.username);
   const { error } = validateUser(req.body);
   if (error) return res.status(400).send(error.details[0].message);
+  const { rows } = await db.query("SELECT * FROM users WHERE username = $1", [
+    req.body.username,
+  ]);
+  if (rows[0]) return res.status(400).send("The username already exist");
+  console.log("data received");
+  console.log(req.body);
+  res.send(req.body);
   // Insert in DB
 });
 
 function validateUser(user) {
   const schema = {
+    mail: Joi.string().email().required(),
     username: Joi.string().min(3).alphanum().required(),
     pass_word: Joi.string().min(3).alphanum().required(),
-    mail: Joi.string().email().required(),
   };
 
   return Joi.validate(user, schema);

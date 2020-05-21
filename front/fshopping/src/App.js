@@ -16,7 +16,7 @@ class App extends Component {
     return (
       <React.Fragment>
         <NavBar onLog={this.handleLog} />
-        <Log log={this.state.log} />
+        <Log log={this.state.log} onLog={this.handleLog} />
       </React.Fragment>
     );
   }
