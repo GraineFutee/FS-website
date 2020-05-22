@@ -12,25 +12,31 @@ const router = new Router();
 module.exports = router;
 
 router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  const { rows } = await db.query("SELECT * FROM users WHERE id = $1", [id]);
+  const username = req.params.id;
+  console.log(username);
+  const queryString = `SELECT * FROM users WHERE username = '${username}'`;
+  console.log(queryString);
+  const { rows } = await db.query(queryString);
+  console.log(rows);
   if (!rows[0])
-    return res.status(404).send("The user with the given ID was not found"); // 404 Not found
+    return res.status(404).send("The username is incorrect or doesn't exist"); // 404 Not found
   res.send(rows[0]);
 });
 
 router.post("/", async (req, res) => {
-  console.log(req.body);
-  console.log(req.body.username);
   const { error } = validateUser(req.body);
   if (error) return res.status(400).send(error.details[0].message);
   const { rows } = await db.query("SELECT * FROM users WHERE username = $1", [
     req.body.username,
   ]);
-  if (rows[0]) return res.status(400).send("The username already exist");
-  console.log("data received");
-  console.log(req.body);
+  if (rows[0]) return res.status(400).send("This username is already taken");
+  const queryString = `INSERT INTO 
+    users(mail, username, pass_word) 
+    VALUES('${req.body.mail}', '${req.body.username}', '${req.body.pass_word}')`;
+  db.query(queryString);
   res.send(req.body);
+  console.log(req.body);
+  console.log("Has been inserted in users");
   // Insert in DB
 });
 

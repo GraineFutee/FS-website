@@ -5,11 +5,7 @@ class NavBar extends Component {
     return (
       <nav className="navbar" role="navigation" aria-label="main navigation">
         <div className="navbar-brand">
-          <a
-            onClick={() => this.props.onLog(null, null)}
-            className="navbar-item"
-            href="#"
-          >
+          <a className="navbar-item" href="#">
             FriendsShopping
           </a>
           <a
@@ -28,22 +24,19 @@ class NavBar extends Component {
           <div className="navbar-end">
             <a className="navbar-item">Explore</a>
 
+            <a className="navbar-item">My Lists</a>
+
             <a className="navbar-item">About</a>
 
             <div className="navbar-item has-dropdown is-hoverable">
-              <a
-                onClick={() => this.props.onLog(true, null)}
-                className="navbar-link"
-              >
-                Log In
-              </a>
+              <a className="navbar-link">{this.props.user.username}</a>
 
               <div className="navbar-dropdown is-right">
                 <a
-                  onClick={() => this.props.onLog(false, null)}
+                  onClick={() => this.props.onLog(null, null)}
                   className="navbar-item"
                 >
-                  Sign-in
+                  Log out
                 </a>
                 <a className="navbar-item">Report an issue</a>
               </div>

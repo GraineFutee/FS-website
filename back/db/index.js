@@ -6,10 +6,10 @@ const pool = new Pool({
   password: null,
   port: 5432,
 });
-pool.query("SELECT NOW()", (err, res) => {
-  console.log(err, res);
-  //   pool.end();
-});
+// pool.query("SELECT NOW()", (err, res) => {
+//   console.log(err, res);
+//   //   pool.end();
+// });
 
 module.exports = {
   query: (text, params) => pool.query(text, params),
