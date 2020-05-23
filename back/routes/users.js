@@ -11,6 +11,16 @@ const router = new Router();
 // export our router to be mounted by the parent application
 module.exports = router;
 
+router.get("/lists/:id", async (req, res) => {
+  const username_id = req.params.id;
+  console.log(username_id);
+  const queryString = `SELECT * FROM lists WHERE id_user_creator = '${username_id}'`;
+  console.log(queryString);
+  const { rows } = await db.query(queryString);
+  console.log(rows);
+  res.send(rows);
+});
+
 router.get("/:id", async (req, res) => {
   const username = req.params.id;
   console.log(username);
@@ -26,13 +36,21 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   const { error } = validateUser(req.body);
   if (error) return res.status(400).send(error.details[0].message);
-  const { rows } = await db.query("SELECT * FROM users WHERE username = $1", [
-    req.body.username,
+  let usernameError = await db.query(
+    "SELECT * FROM users WHERE username = $1",
+    [req.body.username]
+  );
+  usernameError = usernameError.rows;
+  if (usernameError[0])
+    return res.status(400).send("This username is already taken");
+  let mailError = await db.query("SELECT * FROM users WHERE mail = $1", [
+    req.body.mail,
   ]);
-  if (rows[0]) return res.status(400).send("This username is already taken");
+  mailError = mailError.rows;
+  if (mailError[0]) return res.status(400).send("This mail is already taken");
   const queryString = `INSERT INTO 
-    users(mail, username, pass_word) 
-    VALUES('${req.body.mail}', '${req.body.username}', '${req.body.pass_word}')`;
+    users(mail, username, password) 
+    VALUES('${req.body.mail}', '${req.body.username}', '${req.body.password}')`;
   db.query(queryString);
   res.send(req.body);
   console.log(req.body);
@@ -44,7 +62,7 @@ function validateUser(user) {
   const schema = {
     mail: Joi.string().email().required(),
     username: Joi.string().min(3).alphanum().required(),
-    pass_word: Joi.string().min(3).alphanum().required(),
+    password: Joi.string().min(3).alphanum().required(),
   };
 
   return Joi.validate(user, schema);
