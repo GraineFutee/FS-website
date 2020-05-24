@@ -13,8 +13,10 @@ import About from "./components/About";
 import LogIn from "./components/LogIn";
 import SignIn from "./components/SignIn";
 import Home from "./components/Home";
+import List from "./components/List";
 
 import NavBar from "./components/elements/NavBar";
+import Footer from "./components/elements/Footer";
 
 class App extends Component {
   constructor(props) {
@@ -25,6 +27,14 @@ class App extends Component {
         username: "",
         password: "",
       },
+      list: {
+        id: null,
+        name: "",
+        description: "",
+        creation: "",
+        id_user_creator: "",
+        creator: "",
+      },
       go: <div />,
       loged: false,
       error: "",
@@ -32,6 +42,7 @@ class App extends Component {
   }
 
   handleLogOut = () => {
+    this.setState({ go: "" });
     console.log("User loged out");
     const user = { id: null, username: "", password: "" };
     this.setState({ user });
@@ -41,6 +52,7 @@ class App extends Component {
   };
 
   handleLogIn = (user) => {
+    this.setState({ go: "" });
     console.log("New log : ");
     console.log(user);
     this.setState({ user });
@@ -54,6 +66,7 @@ class App extends Component {
           console.log("Password incorect");
           this.setState({ error: "Password incorect" });
         } else {
+          this.setState({ user: res.data });
           this.setState({ loged: true });
           this.setState({ error: "" });
           this.setState({ go: <Redirect push to="/" /> });
@@ -98,10 +111,13 @@ class App extends Component {
           loged={this.state.loged}
           logOut={this.handleLogOut}
         />
-        <main>
+        <main className="has-navbar-fixed-top">
           <Switch>
             <Route path="/explore">
               <Explore />
+            </Route>
+            <Route path="/list">
+              <List list={this.state.list} />
             </Route>
             <Route path="/about">
               <About />
@@ -113,10 +129,11 @@ class App extends Component {
               <SignIn signIn={this.handleSignIn} error={this.state.error} />
             </Route>
             <Route path="/">
-              <Home />
+              <Home user={this.state.user} />
             </Route>
           </Switch>
         </main>
+        <Footer />
       </Router>
     );
   }

@@ -7,9 +7,9 @@ class NavBar extends Component {
     if (this.props.username && this.props.loged) {
       res = (
         <div className="navbar-item has-dropdown is-hoverable">
-          <a className="navbar-link">{this.props.username}</a>
+          <a className="navbar-item is-tab">{this.props.username}</a>
           <div className="navbar-dropdown is-right">
-            <Link className="navbar-item" to="/lists">
+            <Link className="navbar-item" to="/">
               My lists
             </Link>
             <a className="navbar-item" onClick={this.props.logOut}>
@@ -23,22 +23,26 @@ class NavBar extends Component {
     } else {
       res = (
         <div className="navbar-item has-dropdown is-hoverable">
-          <Link className="navbar-item" to="/logIn">
+          <Link className="navbar-item is-tab" to="/logIn">
             Log In
           </Link>
           <div className="navbar-dropdown is-right">
-            <Link className="navbar-item" to="/signIn">
+            <Link className="navbar-item is-tab" to="/signIn">
               Sign In
             </Link>
             <hr className="navbar-divider"></hr>
-            <a className="navbar-link">Report an issue</a>
+            <a className="navbar-item">Report an issue</a>
           </div>
         </div>
       );
     }
     return (
       <header>
-        <nav className="navbar" role="navigation" aria-label="main navigation">
+        <nav
+          className="navbar is-transparent is-fixed-top "
+          role="navigation"
+          aria-label="main navigation"
+        >
           <div className="navbar-brand">
             <Link className="navbar-item" to="/">
               FriendShopping
@@ -49,10 +53,10 @@ class NavBar extends Component {
             <div className="navbar-start"></div>
 
             <div className="navbar-end">
-              <Link className="navbar-item" to="/explore">
+              <Link className="navbar-item is-tab" to="/explore">
                 Explore
               </Link>
-              <Link className="navbar-item" to="/about">
+              <Link className="navbar-item is-tab" to="/about">
                 About
               </Link>
               {res}
