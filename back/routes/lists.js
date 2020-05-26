@@ -14,13 +14,15 @@ module.exports = router;
 router.get("/:id", async (req, res) => {
   const id = req.params.id;
   console.log(id);
-  const queryString = `SELECT * FROM lists WHERE id = ${id}`;
+  const queryString = `SELECT 
+    a.id id, a.name list_name, a.description description,  creation, c.username, b.name element_name, b.description element_description, unite, is_stock, stock, stock_minimum, need 
+    FROM lists a LEFT JOIN elements b ON a.id = b.id_list LEFT JOIN users c ON a.id_user_creator = c.id WHERE a.id = ${id}`;
   console.log(queryString);
   const { rows } = await db.query(queryString);
   console.log(rows);
   if (!rows[0])
     return res.status(404).send("The id is incorrect or doesn't exist"); // 404 Not found
-  res.send(rows[0]);
+  res.send(rows);
 });
 
 router.get("/", async (req, res) => {

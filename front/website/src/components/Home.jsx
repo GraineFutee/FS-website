@@ -7,6 +7,7 @@ import ShowLists from "./elements/ShowLists";
 class Home extends Component {
   constructor(props) {
     super(props);
+    window.scrollTo(0, 0);
     this.state = {
       lists: [],
       error: "",
@@ -47,7 +48,8 @@ class Home extends Component {
         <div className="hero-body">
           <div className="container has-text-centered">
             <h1 className="title is-1">
-              {this.props.user.username && `Hi ${this.props.user.username}`}
+              {this.props.user.username &&
+                `Welcome ${this.props.user.username}`}
             </h1>
             <h1 className="title">Welcome on FriendShopping</h1>
             <hr />

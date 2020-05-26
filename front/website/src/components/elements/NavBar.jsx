@@ -60,6 +60,28 @@ class NavBar extends Component {
                 About
               </Link>
               {res}
+              {this.props.user_id && this.props.loged && (
+                <Link
+                  to={{
+                    pathname: "/profil",
+                    search: `?id=${this.props.user_id}`,
+                  }}
+                >
+                  <div>
+                    <figure class="avatar">
+                      <img
+                        style={{
+                          margin: "6px",
+                          padding: "2px",
+                          borderRadius: "50%",
+                          boxShadow: "0px 0px 1 px black",
+                        }}
+                        src="https://picsum.photos/35/35/?random"
+                      />
+                    </figure>
+                  </div>
+                </Link>
+              )}
             </div>
           </div>
         </nav>

@@ -14,6 +14,7 @@ import LogIn from "./components/LogIn";
 import SignIn from "./components/SignIn";
 import Home from "./components/Home";
 import List from "./components/List";
+import Profil from "./components/Profil";
 
 import NavBar from "./components/elements/NavBar";
 import Footer from "./components/elements/Footer";
@@ -29,11 +30,11 @@ class App extends Component {
       },
       list: {
         id: null,
-        name: "",
-        description: "",
-        creation: "",
-        id_user_creator: "",
-        creator: "",
+        name: "Fridge",
+        description: "Here is the list to keep my fridge full",
+        creation: "20/10/2004",
+        id_user_creator: "3",
+        creator: "StarLord",
       },
       go: <div />,
       loged: false,
@@ -110,6 +111,7 @@ class App extends Component {
           username={this.state.user.username}
           loged={this.state.loged}
           logOut={this.handleLogOut}
+          user_id={this.state.user.id}
         />
         <main className="has-navbar-fixed-top">
           <Switch>
@@ -117,7 +119,7 @@ class App extends Component {
               <Explore />
             </Route>
             <Route path="/list">
-              <List list={this.state.list} />
+              <List list={this.state.user} />
             </Route>
             <Route path="/about">
               <About />
@@ -127,6 +129,9 @@ class App extends Component {
             </Route>
             <Route path="/signIn">
               <SignIn signIn={this.handleSignIn} error={this.state.error} />
+            </Route>
+            <Route path="/profil">
+              <Profil user={this.state.user} />
             </Route>
             <Route path="/">
               <Home user={this.state.user} />
