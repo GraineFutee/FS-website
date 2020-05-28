@@ -10,6 +10,35 @@ const router = new Router();
 
 // export our router to be mounted by the parent application
 module.exports = router;
+router.get("/all/:id", async (req, res) => {
+  const username_id = req.params.id;
+  console.log(username_id);
+  const queryString = `SELECT * FROM lists a LEFT JOIN roles b ON a.id = b.id_list WHERE id_user = '${username_id}'`;
+  console.log(queryString);
+  const { rows } = await db.query(queryString);
+  console.log(rows);
+  res.send(rows);
+});
+
+router.get("/manager/:id", async (req, res) => {
+  const username_id = req.params.id;
+  console.log(username_id);
+  const queryString = `SELECT * FROM lists a LEFT JOIN roles b ON a.id = b.id_list WHERE id_user = '${username_id}' AND role = 'Manager'`;
+  console.log(queryString);
+  const { rows } = await db.query(queryString);
+  console.log(rows);
+  res.send(rows);
+});
+
+router.get("/buyer/:id", async (req, res) => {
+  const username_id = req.params.id;
+  console.log(username_id);
+  const queryString = `SELECT * FROM lists a LEFT JOIN roles b ON a.id = b.id_list WHERE id_user = '${username_id}' AND role = 'Buyer'`;
+  console.log(queryString);
+  const { rows } = await db.query(queryString);
+  console.log(rows);
+  res.send(rows);
+});
 
 router.get("/:id", async (req, res) => {
   const id = req.params.id;

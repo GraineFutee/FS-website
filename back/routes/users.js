@@ -11,14 +11,16 @@ const router = new Router();
 // export our router to be mounted by the parent application
 module.exports = router;
 
-router.get("/lists/:id", async (req, res) => {
-  const username_id = req.params.id;
-  console.log(username_id);
-  const queryString = `SELECT * FROM lists WHERE id_user_creator = '${username_id}'`;
+router.get("/byid/:id", async (req, res) => {
+  const id = req.params.id;
+  console.log(id);
+  const queryString = `SELECT * FROM users WHERE id = '${id}'`;
   console.log(queryString);
   const { rows } = await db.query(queryString);
   console.log(rows);
-  res.send(rows);
+  if (!rows[0])
+    return res.status(404).send("The user with this id doesn't exist"); // 404 Not found
+  res.send(rows[0]);
 });
 
 router.get("/:id", async (req, res) => {

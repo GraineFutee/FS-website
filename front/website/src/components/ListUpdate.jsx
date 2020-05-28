@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 
-class List extends Component {
+class ListUpdate extends Component {
   constructor(props) {
     super(props);
     window.scrollTo(0, 0);
@@ -15,42 +15,46 @@ class List extends Component {
         username: "",
       },
       elements: [],
-      stock: [],
     };
   }
 
   componentDidMount() {
-    axios
-      .get(`http://localhost:3001/api/lists/${this.state.list.id}`)
-      .then((res) => {
-        if (res.data) {
-          let elements = [];
-          let stock = [];
-          res.data.forEach((element) => {
-            if (element.is_stock) {
-              stock.push(element);
-            }
-            if (element.need > 0) {
+    if (this.state.list.id) {
+      axios
+        .get(`http://localhost:3001/api/lists/${this.state.list.id}`)
+        .then((res) => {
+          console.log("Response from server :");
+          console.log(res);
+          console.log(res.data);
+          if (res.data) {
+            let elements = [];
+            res.data.forEach((element) => {
               elements.push(element);
-            }
-          });
-          this.setState({ elements });
-          this.setState({ stock });
-          const list = {
-            id: res.data[0].id,
-            list_name: res.data[0].list_name,
-            description: res.data[0].description,
-            creation: res.data[0].creation,
-            username: res.data[0].username,
-          };
-          this.setState({ list });
-        }
-      })
-      .catch((error) => {
-        if (error.response) {
-          this.setState({ error: error.response.data });
-        }
-      });
+            });
+            this.setState({ elements });
+            const list = {
+              id: res.data[0].id,
+              list_name: res.data[0].list_name,
+              description: res.data[0].description,
+              creation: res.data[0].creation,
+              username: res.data[0].username,
+            };
+            this.setState({ list });
+            console.log("State updated");
+            console.log(this.state.list);
+          } else {
+            // this.setState({ lists: null });
+          }
+        })
+        .catch((error) => {
+          console.log("here1");
+          console.log("Error from server :");
+          console.log(error.response);
+          if (error.response) {
+            this.setState({ error: error.response.data });
+          }
+        });
+    }
   }
 
   tabSwitch = (tabId) => {
@@ -72,8 +76,21 @@ class List extends Component {
       <section className="hero is-danger is-medium">
         <div className="hero-body">
           <div className="container">
-            <h1 className="title">{this.state.list.list_name}</h1>
+            <div className="field">
+              <div className="control">
+                <input
+                  className="input"
+                  type="text"
+                  placeholder="Title ..."
+                  value={this.state.list.list_name}
+                  onChange={(e) => (this.state.list.list_name = e.target.value)}
+                />
+              </div>
+            </div>
             <h2 className="subtitle">By : {this.state.list.username}</h2>
+          </div>
+          <div className="container has-text-right">
+            <button className="button is-dark">Save changes</button>
           </div>
         </div>
         <div class="tabs is-boxed is-centered is-marginless">
@@ -91,15 +108,7 @@ class List extends Component {
                 <span class="icon is-small">
                   <i class="fas fa-list" aria-hidden="true"></i>
                 </span>
-                <span>Elements</span>
-              </a>
-            </li>
-            <li className={this.state.activeTab === 3 && "is-active"}>
-              <a onClick={(e) => this.tabSwitch(3)}>
-                <span class="icon is-small">
-                  <i class="fas fa-cubes" aria-hidden="true"></i>
-                </span>
-                <span>Stock</span>
+                <span>Elements/Stock</span>
               </a>
             </li>
             <li className={this.state.activeTab === 4 && "is-active"}>
@@ -136,7 +145,18 @@ class List extends Component {
                   </div>
                   <div className="column">
                     <div className="box">
-                      <p>{this.state.list.description}</p>
+                      <div className="field">
+                        <div className="control">
+                          <textarea
+                            class="textarea"
+                            placeholder="Description ..."
+                            value={this.state.list.description}
+                            onChange={(e) =>
+                              (this.state.list.description = e.target.value)
+                            }
+                          ></textarea>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -149,7 +169,7 @@ class List extends Component {
           >
             <div className="container">
               <div className="box">
-                <h1 className="title has-text-dark">Elements</h1>
+                <h1 className="title has-text-dark">Elements/Stocks</h1>
                 <div className="box">
                   <table className="table is-striped is-hoverable is-fullwidth">
                     <thead>
@@ -159,52 +179,53 @@ class List extends Component {
                         <th>Need</th>
                         <th>Unit</th>
                         <th>Buyer</th>
+                        <th>IsStock</th>
+                        <th>Stock</th>
+                        <th>StockMin</th>
                       </tr>
                     </thead>
                     <tbody>
                       {this.state.elements.map((element) => (
                         <tr>
-                          <th>{element.element_name}</th>
-                          <td>{element.element_description}</td>
-                          <td>{element.need}</td>
-                          <td>{element.unite}</td>
+                          <th>
+                            <input
+                              className="input"
+                              type="text"
+                              placeholder="Title ..."
+                              value={element.element_name}
+                            />
+                          </th>
+                          <td>
+                            <input
+                              className="input"
+                              type="text"
+                              placeholder="Title ..."
+                              value={element.element_description}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="input"
+                              type="text"
+                              placeholder="Title ..."
+                              value={element.need}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="input"
+                              type="text"
+                              placeholder="Title ..."
+                              value={element.unite}
+                            />
+                          </td>
                           <td>None</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            className={this.state.activeTab === 3 && "is-active"}
-            style={{ display: this.state.activeTab !== 3 && "none" }}
-          >
-            <div className="container">
-              <div className="box">
-                <h1 className="title has-text-dark">Stock</h1>
-                <div className="box">
-                  <table className="table is-striped is-hoverable is-fullwidth">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Stock</th>
-                        <th>Unit</th>
-                        <th>Stock Min</th>
-                        <th>Buyer</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {this.state.stock.map((element) => (
-                        <tr>
-                          <th>{element.element_name}</th>
-                          <td>{element.element_description}</td>
+                          <td>
+                            {element.is_stock && "Yes"}
+                            {!element.is_stock && "No"}
+                          </td>
                           <td>{element.stock}</td>
-                          <td>{element.unite}</td>
                           <td>{element.stock_minimum}</td>
-                          <td>None</td>
                         </tr>
                       ))}
                     </tbody>
@@ -225,4 +246,4 @@ class List extends Component {
   }
 }
 
-export default List;
+export default ListUpdate;

@@ -14,9 +14,10 @@ import LogIn from "./components/LogIn";
 import SignIn from "./components/SignIn";
 import Home from "./components/Home";
 import List from "./components/List";
+import ListUpdate from "./components/ListUpdate";
 import Profil from "./components/Profil";
 
-import NavBar from "./components/elements/NavBar";
+import NavBar from "./components/elements/navBar/NavBar";
 import Footer from "./components/elements/Footer";
 
 class App extends Component {
@@ -120,6 +121,9 @@ class App extends Component {
             </Route>
             <Route path="/list">
               <List list={this.state.user} />
+            </Route>
+            <Route path="/list_update">
+              <ListUpdate list={this.state.user} />
             </Route>
             <Route path="/about">
               <About />

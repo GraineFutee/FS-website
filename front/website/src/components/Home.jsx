@@ -9,31 +9,37 @@ class Home extends Component {
     super(props);
     window.scrollTo(0, 0);
     this.state = {
-      lists: [],
+      listsManager: [],
+      listsBuyer: [],
       error: "",
     };
   }
   componentDidMount() {
     if (this.props.user.id) {
-      console.log("Getting the lists of the connected user");
       axios
-        .get(`http://localhost:3001/api/users/lists/${this.props.user.id}`)
+        .get(`http://localhost:3001/api/lists/manager/${this.props.user.id}`)
         .then((res) => {
-          console.log("Response from server :");
-          console.log(res);
-          console.log(res.data);
           if (res.data.length === 0) {
-            this.setState({ lists: [] });
+            this.setState({ listsManager: [] });
           } else {
-            this.setState({ lists: res.data });
-            console.log("State updated");
-            console.log(this.state.lists);
+            this.setState({ listsManager: res.data });
           }
         })
         .catch((error) => {
-          console.log("here1");
-          console.log("Error from server :");
-          console.log(error.response);
+          if (error.response) {
+            this.setState({ error: error.response.data });
+          }
+        });
+      axios
+        .get(`http://localhost:3001/api/lists/buyer/${this.props.user.id}`)
+        .then((res) => {
+          if (res.data.length === 0) {
+            this.setState({ listsBuyer: [] });
+          } else {
+            this.setState({ listsBuyer: res.data });
+          }
+        })
+        .catch((error) => {
           if (error.response) {
             this.setState({ error: error.response.data });
           }
@@ -42,14 +48,12 @@ class Home extends Component {
   }
 
   render() {
-    console.log(this.state.lists);
     return (
       <section className="hero is-primary is-fullheight">
         <div className="hero-body">
           <div className="container has-text-centered">
             <h1 className="title is-1">
-              {this.props.user.username &&
-                `Welcome ${this.props.user.username}`}
+              {this.props.user.username && `Hi ${this.props.user.username}`}
             </h1>
             <h1 className="title">Welcome on FriendShopping</h1>
             <hr />
@@ -68,12 +72,22 @@ class Home extends Component {
             )}
             {this.props.user.id && (
               <div>
-                {this.state.lists.length > 0 && (
-                  <ShowLists lists={this.state.lists} />
+                {this.state.listsManager.length > 0 && (
+                  <div className="box">
+                    <h1 className="title has-text-dark">Lists you manage</h1>
+                    <ShowLists lists={this.state.listsManager} />
+                  </div>
                 )}
-                {this.state.lists.length === 0 && (
-                  <p>It's a bit empty here...</p>
+                {this.state.listsBuyer.length > 0 && (
+                  <div className="box">
+                    <h1 className="title has-text-dark">Lists you buy</h1>
+                    <ShowLists lists={this.state.listsBuyer} />
+                  </div>
                 )}
+                {this.state.listsManager.length === 0 &&
+                  this.state.listsBuyer.length === 0 && (
+                    <p>It's a bit empty here...</p>
+                  )}
                 <button className="button">Create a new list</button>
               </div>
             )}

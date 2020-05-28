@@ -1,6 +1,52 @@
 import React, { Component } from "react";
+import ShowListsProfile from "./elements/ShowListsProfile";
+import axios from "axios";
 
 class Profil extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: {
+        id: this.getParameterByName("id"),
+        username: "",
+      },
+    };
+  }
+
+  componentDidMount() {
+    if (this.state.user.id) {
+      console.log("Getting the lists of the connected user");
+      axios
+        .get(`http://localhost:3001/api/users/byid/${this.state.user.id}`)
+        .then((res) => {
+          console.log("Response from server :");
+          console.log(res);
+          console.log(res.data);
+          this.setState({ user: res.data });
+          console.log("State updated");
+          console.log(this.state.user);
+        })
+        .catch((error) => {
+          console.log("here1");
+          console.log("Error from server :");
+          console.log(error.response);
+          if (error.response) {
+            this.setState({ error: error.response.data });
+          }
+        });
+    }
+  }
+
+  getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+      results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return "";
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+  }
+
   render() {
     return (
       <section className="hero is-primary is-fullheight">
@@ -18,7 +64,9 @@ class Profil extends Component {
                   src="https://picsum.photos/300/300/?random"
                 />
               </figure>
-              <h1 className="title has-text-dark is-1">Ayelen</h1>
+              <h1 className="title has-text-dark is-1">
+                {this.state.user.username}
+              </h1>
               <hr />
               <div className="columns">
                 <div className="column">
@@ -94,6 +142,7 @@ class Profil extends Component {
                   <div className="column">
                     <div className="box">
                       <h1 className="title has-text-dark">Lists</h1>
+                      <ShowListsProfile user={this.state.user} />
                     </div>
                   </div>
                 </div>
